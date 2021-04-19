@@ -9,7 +9,7 @@ class ConnectMongo {
     mongoose
       .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
         useUnifiedTopology: true,
         useCreateIndex: true,
       })

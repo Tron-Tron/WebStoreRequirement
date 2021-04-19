@@ -1,4 +1,4 @@
-import ErrorResponse from "../components/ortherModels/ErrorResponse.js";
+import ErrorResponse from "../components/utils/errorResponse.js";
 
 const authorize = (...roles) => (req, res, next) => {
   if (!req.user) {

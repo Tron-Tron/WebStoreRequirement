@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../components/user/userModel.js";
-import ErrorRespone from "../components/utils/errorResponse";
+import ErrorResponse from "../components/utils/errorResponse.js";
 
 const jwtAuth = async (req, res, next) => {
   const token = req.headers.authorization
@@ -8,11 +8,10 @@ const jwtAuth = async (req, res, next) => {
     : null;
 
   if (!token) {
-    return next(new ErrorRespone(401, "Unauthorized"));
+    return next(new ErrorResponse(401, "Unauthorized"));
   }
   try {
     const payload = jwt.verify(token, process.env.JWT_KEY);
-    console.log(payload);
     const user = await User.findOne({ email: payload.email });
     if (!user) {
       return next(new ErrorResponse(401, "Unauthorized"));
@@ -20,7 +19,7 @@ const jwtAuth = async (req, res, next) => {
     req.user = payload;
     next();
   } catch (error) {
-    return next(new ErrorRespone(401, "Unauthorized"));
+    return next(new ErrorResponse(401, "Unauthorized"));
   }
 };
 

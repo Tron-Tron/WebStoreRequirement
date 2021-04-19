@@ -12,6 +12,9 @@ import config from "./config/dev.js";
 import swaggerOptions from "./config/swagger.js";
 import auth from "./components/auth/authRoute.js";
 import user from "./components/user/userRouter.js";
+import category from "./components/categories/categoryRouter.js";
+import product from "./components/products/productRouter.js";
+
 const app = express();
 app.use(express.json());
 ConnectMongo.getConnect();
@@ -56,6 +59,8 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api", auth);
 app.use("/api/user", user);
+app.use("/category", category);
+app.use("/product", product);
 
 app.use(errorMiddleware);
 app.listen(config.port, () => {

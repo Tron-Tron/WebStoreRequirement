@@ -33,6 +33,9 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "phone is required"],
     },
+    avatar: {
+      type: String,
+    },
     isActive: {
       type: Boolean,
       default: true,

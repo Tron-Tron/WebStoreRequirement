@@ -17,7 +17,7 @@ const errorMiddleware = (err, req, res, next) => {
     errors.code = 400;
     errors.message = "Id is invalid";
   }
-  // mongoValidator
+
   if (err.name === "ValidationError") {
     errors = new ErrorResponse(400, err.errors);
     for (let i in err.errors) {
