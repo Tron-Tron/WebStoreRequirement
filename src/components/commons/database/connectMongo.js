@@ -14,13 +14,13 @@ class ConnectMongo {
         useCreateIndex: true,
       })
       .then(() => console.log("DB is connected"));
-    // const conn = mongoose.connection;
-    // conn.once("open", () => {
-    //   console.log("DB is connected");
-    //   this.gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    //     bucketName: "uploads",
-    //   });
-    // });
+    const conn = mongoose.connection;
+    conn.once("open", () => {
+      console.log("DB is connected");
+      this.gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: "uploads",
+      });
+    });
   }
 }
 export default ConnectMongo;

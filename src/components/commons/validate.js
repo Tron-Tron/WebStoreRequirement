@@ -2,7 +2,8 @@ import ErrorResponse from "../utils/errorResponse.js";
 // import User from "../components/user/userModel.js";
 
 export const isEmail = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  console.log(req.body.email);
+  const regex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
   if (!regex.test(req.body.email)) {
     return next(new ErrorResponse(400, "Invalid Email"));
   }

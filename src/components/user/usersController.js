@@ -5,19 +5,17 @@ import User from "./userModel.js";
 import mongoose from "mongoose";
 
 export const getAllUsers = asyncMiddleware(async (req, res, next) => {
-  const users = await User.find().select("-password");
+  const users = await User.find();
   if (!users.length) {
     return next(new ErrorResponse(404, "No users"));
   }
   return res.status(200).json(new SuccessResponse(200, users));
 });
 export const createUser = asyncMiddleware(async (req, res, next) => {
-  const { userName, email, password, role, address, phone } = req.body;
+  const { userName, email, address, phone } = req.body;
   const newUser = new User({
     userName,
     email,
-    password,
-    role,
     address,
     phone,
   });
@@ -30,16 +28,14 @@ export const getUserById = asyncMiddleware(async (req, res, next) => {
   if (!userId.trim()) {
     return next(new ErrorResponse(400, "userId is empty"));
   }
-  const user = await User.findById(userId)
-    .select("-password")
-    .catch((error) => {
-      return next(new ErrorResponse(400, `No user has id ${userId}`));
-    });
+  const user = await User.findById(userId).catch((error) => {
+    return next(new ErrorResponse(400, `No user has id ${userId}`));
+  });
   return res.status(200).json(new SuccessResponse(200, user));
 });
 export const updateUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
-  const { userName, email, password, role, address, phone } = req.body;
+  const { userName, email, address, phone } = req.body;
   if (!userId.trim()) {
     return next(new ErrorRespone(400, "userId is empty"));
   }
@@ -52,8 +48,6 @@ export const updateUserById = asyncMiddleware(async (req, res, next) => {
   }
   user.userName = userName;
   user.email = email;
-  user.password = password;
-  user.role = role;
   user.address = address;
   user.phone = phone;
   const updatedUser = await user.save();

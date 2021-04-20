@@ -14,17 +14,6 @@ const UserSchema = new Schema(
       unique: true,
       required: [true, "email is required"],
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: [6, "Password must be at least 6 characters"],
-    },
-    role: {
-      type: String,
-      enum: ["owner", "guest", "employee"],
-      required: true,
-      default: "guest",
-    },
     address: {
       type: String,
       required: [true, "address is required"],
@@ -46,13 +35,5 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-UserSchema.statics.comparePassword = async function (password, hashedPassword) {
-  return await bcrypt.compare(password, hashedPassword);
-};
 const User = mongoose.model("User", UserSchema);
 export default User;

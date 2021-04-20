@@ -1,21 +1,28 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import SuccessResponse from "../utils/successResponse.js";
-import User from "../user/userModel.js";
+import Auth from "./authModel.js";
 import jwt from "jsonwebtoken";
 import ErrorResponse from "../utils/errorResponse.js";
+import Staff from "../staffs/staffModel.js";
 export const register = asyncMiddleware(async (req, res, next) => {
-  const { userName, email, password, role, address, phone } = req.body;
-  const newUser = new User({ userName, email, password, role, address, phone });
-  const saved_user = await newUser.save();
-  res.status(201).json(new SuccessResponse(201, saved_user));
+  const { authName, email, password, role } = req.body;
+  const newAuth = new Auth({ authName, email, password, role });
+  if (role === "employee" || role === "owner") {
+    const isExistEmailEmployee = await Staff.findOne({ email });
+    if (!isExistEmailEmployee) {
+      return next(new ErrorResponse(400, "Email staff is not exist"));
+    }
+  }
+  const auth = await newAuth.save();
+  res.status(201).json(new SuccessResponse(201, auth));
 });
 export const login = asyncMiddleware(async (req, res, next) => {
   const { email, password } = req.body;
-  const isExistEmail = await User.findOne({ email });
+  const isExistEmail = await Auth.findOne({ email });
   if (!isExistEmail) {
     return next(new ErrorResponse(404, "Email is not found"));
   }
-  const isMatchPassword = await User.comparePassword(
+  const isMatchPassword = await Auth.comparePassword(
     password,
     isExistEmail.password
   );
