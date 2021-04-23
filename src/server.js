@@ -11,7 +11,7 @@ import errorMiddleware from "./middleware/errorMiddleware.js";
 import config from "./config/dev.js";
 import swaggerOptions from "./config/swagger.js";
 import auth from "./components/auth/authRoute.js";
-import user from "./components/user/userRouter.js";
+import user from "./components/users/userRouter.js";
 import category from "./components/categories/categoryRouter.js";
 import product from "./components/products/productRouter.js";
 import staff from "./components/staffs/staffRouter.js";
@@ -58,8 +58,8 @@ if (process.env.NODE_ENV === "development") {
 // api routes to /api
 // app.use("/api", routes);
 
-app.use("/api", auth);
-app.use("/api/user", user);
+app.use("/auth", auth);
+app.use("/user", user);
 app.use("/category", category);
 app.use("/product", product);
 app.use("/staff", staff);

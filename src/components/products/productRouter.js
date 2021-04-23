@@ -8,11 +8,12 @@ import {
   deteleProductById,
   updateProductById,
 } from "./productController.js";
+import upload from "../commons/upload.js";
 
 const router = express.Router();
 router.use(jwtAuth, authorize("owner", "employee"));
 
-router.post("/", createNewProduct);
+router.post("/", upload.array("images", 10), createNewProduct);
 router.get("/all", getAllProducts);
 router.get("/:productId", getProductById);
 router.delete("/:productId", deteleProductById);

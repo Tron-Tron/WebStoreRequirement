@@ -9,7 +9,6 @@ export const createNewProduct = asyncMiddleware(async (req, res, next) => {
     productName,
     price,
     amount,
-    image,
     description,
     distributor,
     categoryId,
@@ -18,11 +17,18 @@ export const createNewProduct = asyncMiddleware(async (req, res, next) => {
   if (!checkCategory) {
     return next(new ErrorResponse(400, "Category is not exist"));
   }
+  if (!req.files) {
+    return next(new ErrorRespone(500, "No file"));
+  }
+  const images = req.files.map((val) => {
+    return val.filename;
+  });
+
   const newProduct = new Product({
     productName,
     price,
     amount,
-    image,
+    images,
     description,
     distributor,
     categoryId,

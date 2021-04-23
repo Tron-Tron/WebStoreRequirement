@@ -13,12 +13,16 @@ export const getAllUsers = asyncMiddleware(async (req, res, next) => {
 });
 export const createUser = asyncMiddleware(async (req, res, next) => {
   const { userName, email, address, phone } = req.body;
+  console.log(req);
+
   const newUser = new User({
     userName,
     email,
     address,
     phone,
+    avatar: req.file.filename,
   });
+  console.log(req.file.filename);
   const saved_user = await newUser.save();
   res.status(201).json(new SuccessResponse(201, saved_user));
 });
