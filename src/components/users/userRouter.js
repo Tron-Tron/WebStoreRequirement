@@ -6,7 +6,7 @@ import {
   createUser,
   updateUserById,
   deleteUserById,
-} from "../users/usersController.js";
+} from "./usersController.js";
 import { isEmail, isPhone } from "../commons/validate.js";
 import authorize from "./../../middleware/authorize.js";
 import upload from "../commons/upload.js";

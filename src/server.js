@@ -15,6 +15,7 @@ import user from "./components/users/userRouter.js";
 import category from "./components/categories/categoryRouter.js";
 import product from "./components/products/productRouter.js";
 import staff from "./components/staffs/staffRouter.js";
+import cart from "./components/carts/cartRouter.js";
 
 const app = express();
 app.use(express.json());
@@ -63,7 +64,7 @@ app.use("/user", user);
 app.use("/category", category);
 app.use("/product", product);
 app.use("/staff", staff);
-
+app.use("/cart", cart);
 app.use(errorMiddleware);
 app.listen(config.port, () => {
   console.log(`server is running in port ${config.port}`);
