@@ -1,7 +1,7 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import SuccessResponse from "../utils/SuccessResponse.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
-import User from "./userModel.js";
+import { User } from "./userModel.js";
 import mongoose from "mongoose";
 
 export const getAllUsers = asyncMiddleware(async (req, res, next) => {

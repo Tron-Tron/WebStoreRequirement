@@ -7,7 +7,8 @@ import {
   updateUserById,
   deleteUserById,
 } from "./usersController.js";
-import { isEmail, isPhone } from "../commons/validate.js";
+import validateMiddleware from "./../commons/validateMiddleware.js";
+import { validateUser } from "./userModel.js";
 import authorize from "./../../middleware/authorize.js";
 import upload from "../commons/upload.js";
 
@@ -18,10 +19,14 @@ router.post(
   "/",
   jwtAuth,
   upload.single("avatar"),
-  isEmail,
-  isPhone,
+  validateMiddleware(validateUser),
   createUser
 );
-router.patch("/:userId", jwtAuth, isEmail, isPhone, updateUserById);
+router.patch(
+  "/:userId",
+  jwtAuth,
+  validateMiddleware(validateUser),
+  updateUserById
+);
 router.delete("/:userId", jwtAuth, deleteUserById);
 export default router;

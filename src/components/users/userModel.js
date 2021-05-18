@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Joi from "joi";
 const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
@@ -34,5 +35,17 @@ const UserSchema = new Schema(
   }
 );
 
-const User = mongoose.model("User", UserSchema);
-export default User;
+export const User = mongoose.model("User", UserSchema);
+export const validateUser = (user) => {
+  const schema = Joi.object({
+    userName: Joi.string().required(),
+    email: Joi.string().email().required(),
+    address: Joi.string().required(),
+    phone: Joi.string()
+      .pattern(
+        new RegExp("/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im")
+      )
+      .required(),
+  });
+  return schema.validate(user);
+};

@@ -8,17 +8,12 @@ const CartSchema = new Schema(
     },
     products: [
       {
-        sku: {
-          type: String,
-          default: null,
-          require: [true, "sku is required"],
+        productId: {
+          type: Schema.Types.ObjectId,
+          require: true,
+          ref: "Product",
         },
-        name: {
-          type: String,
-          default: null,
-          require: [true, "name product is required"],
-        },
-        amount: {
+        amountCart: {
           type: Number,
           require: [true, "amount is required"],
           default: 0,
@@ -40,8 +35,15 @@ const CartSchema = new Schema(
     },
   },
   {
+    toJSON: { virtuals: true },
     timestamps: true,
   }
 );
+CartSchema.virtual("user", {
+  ref: "Auth",
+  localField: "email",
+  foreignField: "email",
+  justOne: true,
+});
 const Cart = mongoose.model("Cart", CartSchema);
 export default Cart;

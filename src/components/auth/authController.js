@@ -1,9 +1,9 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import SuccessResponse from "../utils/successResponse.js";
-import Auth from "./authModel.js";
+import { Auth } from "./authModel.js";
 import jwt from "jsonwebtoken";
 import ErrorResponse from "../utils/errorResponse.js";
-import Staff from "../staffs/staffModel.js";
+import { Staff } from "../staffs/staffModel.js";
 import Cart from "../carts/CartModel.js";
 
 export const register = asyncMiddleware(async (req, res, next) => {
@@ -15,6 +15,7 @@ export const register = asyncMiddleware(async (req, res, next) => {
       return next(new ErrorResponse(400, "Email staff is not exist"));
     }
   }
+
   const auth = await newAuth.save();
   const newCart = new Cart({ email });
   newCart.save();
@@ -36,6 +37,7 @@ export const login = asyncMiddleware(async (req, res, next) => {
   }
   const token = jwt.sign(
     {
+      _id: isExistEmail._id,
       email: isExistEmail.email,
       role: isExistEmail.role,
     },

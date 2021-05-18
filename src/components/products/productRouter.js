@@ -7,6 +7,7 @@ import {
   getProductById,
   deteleProductById,
   updateProductById,
+  searchProductByName,
 } from "./productController.js";
 import upload from "../commons/upload.js";
 
@@ -18,4 +19,6 @@ router.get("/all", getAllProducts);
 router.get("/:productId", getProductById);
 router.delete("/:productId", deteleProductById);
 router.patch("/:productId", updateProductById);
+router.get("/", searchProductByName);
+
 export default router;

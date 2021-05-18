@@ -1,7 +1,7 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import ErrorResponse from "../utils/errorResponse.js";
 import SuccessResponse from "../utils/successResponse.js";
-import Staff from "./staffModel.js";
+import { Staff } from "./staffModel.js";
 
 export const createNewStaff = asyncMiddleware(async (req, res, next) => {
   const { staffName, dateOfBirth, address, phone, email } = req.body;

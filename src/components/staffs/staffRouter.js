@@ -1,7 +1,8 @@
 import express from "express";
 import authorize from "../../middleware/authorize.js";
 import jwtAuth from "../../middleware/jwtAuth.js";
-import { isEmail, isPhone } from "../commons/validate.js";
+import validateMiddleware from "./../commons/validateMiddleware.js";
+import { validateStaff } from "./staffModel.js";
 import {
   createNewStaff,
   getStaffById,
@@ -13,10 +14,10 @@ import {
 const router = express.Router();
 router.use(jwtAuth, authorize("owner"));
 
-router.post("/", isEmail, isPhone, createNewStaff);
+router.post("/", validateMiddleware(validateStaff), createNewStaff);
 router.get("/all", getAllStaffs);
 router.get("/:staffId", getStaffById);
-router.patch("/:staffId", isEmail, isPhone, updateStaffById);
+router.patch("/:staffId", validateMiddleware(validateStaff), updateStaffById);
 router.delete("/:staffId", deleteStaffById);
 
 export default router;

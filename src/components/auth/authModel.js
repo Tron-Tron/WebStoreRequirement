@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import Joi from "joi";
 const { Schema } = mongoose;
+
 const AuthSchema = new Schema(
   {
     authName: {
       type: String,
       required: [true, "userName is required"],
       unique: true,
-      minlength: [6, "Name must have more than 6 characters"],
     },
     email: {
       type: String,
@@ -17,13 +18,16 @@ const AuthSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minlength: [6, "Password must be at least 6 characters"],
     },
     role: {
       type: String,
       enum: ["owner", "guest", "employee"],
       required: true,
       default: "guest",
+    },
+    cart: {
+      type: Schema.Types.ObjectId,
+      ref: "Cart",
     },
   },
   {
@@ -40,5 +44,14 @@ AuthSchema.pre("save", async function (next) {
 AuthSchema.statics.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 };
-const Auth = mongoose.model("Auth", AuthSchema);
-export default Auth;
+export const Auth = mongoose.model("Auth", AuthSchema);
+
+export const validateAuth = (auth) => {
+  const schema = Joi.object({
+    authName: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    role: Joi.string().required(),
+  });
+  return schema.validate(auth);
+};

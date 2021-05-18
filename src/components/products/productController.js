@@ -5,14 +5,8 @@ import ErrorResponse from "../utils/ErrorResponse.js";
 import Category from "../categories/categoryModel.js";
 
 export const createNewProduct = asyncMiddleware(async (req, res, next) => {
-  const {
-    productName,
-    price,
-    amount,
-    description,
-    distributor,
-    categoryId,
-  } = req.body;
+  const { productName, price, amount, description, distributor, categoryId } =
+    req.body;
   const checkCategory = await Category.findById(categoryId);
   if (!checkCategory) {
     return next(new ErrorResponse(400, "Category is not exist"));
@@ -83,4 +77,17 @@ export const updateProductById = asyncMiddleware(async (req, res, next) => {
     return next(new ErrorResponse(404, `No product has id ${productId}`));
   }
   return res.status(200).json(new SuccessResponse(200, updatedProduct));
+});
+export const searchProductByName = asyncMiddleware(async (req, res, next) => {
+  const { keyName } = req.query;
+  const productArr = await Product.find();
+  const searchedProduct = productArr.filter((value) => {
+    return (
+      value.productName.toLowerCase().indexOf(keyName.toLowerCase()) !== -1
+    );
+  });
+  if (searchedProduct.length === 0) {
+    res.status(404).json(new ErrorResponse(400, "No Products"));
+  }
+  res.status(200).json(new SuccessResponse(200, searchedProduct));
 });

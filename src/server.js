@@ -16,7 +16,9 @@ import category from "./components/categories/categoryRouter.js";
 import product from "./components/products/productRouter.js";
 import staff from "./components/staffs/staffRouter.js";
 import cart from "./components/carts/cartRouter.js";
-
+import order from "./components/orders/orderRouter.js";
+import report from "./components/reports/reportRouter.js";
+import notifi from "./components/notification/notificationRouter.js";
 const app = express();
 app.use(express.json());
 ConnectMongo.getConnect();
@@ -65,6 +67,10 @@ app.use("/category", category);
 app.use("/product", product);
 app.use("/staff", staff);
 app.use("/cart", cart);
+app.use("/order", order);
+app.use("/report", report);
+app.use("/notifi", notifi);
+
 app.use(errorMiddleware);
 app.listen(config.port, () => {
   console.log(`server is running in port ${config.port}`);

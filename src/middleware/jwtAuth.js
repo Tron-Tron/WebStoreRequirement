@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Auth from "../components/auth/authModel.js";
+import { Auth } from "../components/auth/authModel.js";
 import ErrorResponse from "../components/utils/errorResponse.js";
 
 const jwtAuth = async (req, res, next) => {
