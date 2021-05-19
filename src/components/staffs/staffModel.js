@@ -45,6 +45,6 @@ export const validateStaff = (staff) => {
 
       .required(),
     dateOfBirth: Joi.date().required(),
-  });
+  }).unknown(true);
   return schema.validate(staff);
 };

@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Joi from "joi";
 const { Schema } = mongoose;
-
 const AuthSchema = new Schema(
   {
     authName: {
@@ -25,6 +24,15 @@ const AuthSchema = new Schema(
       required: true,
       default: "guest",
     },
+    permissions: [
+      {
+        permissionKey: {
+          type: String,
+          required: true,
+          default: null,
+        },
+      },
+    ],
     cart: {
       type: Schema.Types.ObjectId,
       ref: "Cart",

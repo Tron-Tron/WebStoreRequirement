@@ -9,13 +9,12 @@ import Cart from "../carts/CartModel.js";
 export const register = asyncMiddleware(async (req, res, next) => {
   const { authName, email, password, role } = req.body;
   const newAuth = new Auth({ authName, email, password, role });
-  if (role === "employee" || role === "owner") {
-    const isExistEmailEmployee = await Staff.findOne({ email });
-    if (!isExistEmailEmployee) {
-      return next(new ErrorResponse(400, "Email staff is not exist"));
-    }
-  }
-
+  // if (role === "employee" || role === "owner") {
+  //   const isExistEmailEmployee = await Staff.findOne({ email });
+  //   if (!isExistEmailEmployee) {
+  //     return next(new ErrorResponse(400, "Email staff is not exist"));
+  //   }
+  // }
   const auth = await newAuth.save();
   const newCart = new Cart({ email });
   newCart.save();
@@ -40,9 +39,9 @@ export const login = asyncMiddleware(async (req, res, next) => {
       _id: isExistEmail._id,
       email: isExistEmail.email,
       role: isExistEmail.role,
+      permissions: isExistEmail.permissions,
     },
     process.env.JWT_KEY
   );
-
   return res.status(200).json(new SuccessResponse(200, token));
 });

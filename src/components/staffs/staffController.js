@@ -1,12 +1,29 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
+import { Auth } from "../auth/authModel.js";
 import ErrorResponse from "../utils/errorResponse.js";
 import SuccessResponse from "../utils/successResponse.js";
 import { Staff } from "./staffModel.js";
 
 export const createNewStaff = asyncMiddleware(async (req, res, next) => {
-  const { staffName, dateOfBirth, address, phone, email } = req.body;
+  const {
+    staffName,
+    dateOfBirth,
+    address,
+    phone,
+    email,
+    password,
+    permissions,
+  } = req.body;
   const newStaff = new Staff({ staffName, dateOfBirth, address, phone, email });
   const savedStaff = await newStaff.save();
+  const newAuth = new Auth({
+    authName: staffName,
+    email,
+    password,
+    role: "employee",
+    permissions,
+  });
+  await newAuth.save();
   return res.status(200).json(new SuccessResponse(200, savedStaff));
 });
 
