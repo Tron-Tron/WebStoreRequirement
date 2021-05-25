@@ -3,18 +3,11 @@ import SuccessResponse from "../utils/successResponse.js";
 import { Auth } from "./authModel.js";
 import jwt from "jsonwebtoken";
 import ErrorResponse from "../utils/errorResponse.js";
-import { Staff } from "../staffs/staffModel.js";
 import Cart from "../carts/CartModel.js";
 
 export const register = asyncMiddleware(async (req, res, next) => {
-  const { authName, email, password, role } = req.body;
-  const newAuth = new Auth({ authName, email, password, role });
-  // if (role === "employee" || role === "owner") {
-  //   const isExistEmailEmployee = await Staff.findOne({ email });
-  //   if (!isExistEmailEmployee) {
-  //     return next(new ErrorResponse(400, "Email staff is not exist"));
-  //   }
-  // }
+  const { authName, email, password } = req.body;
+  const newAuth = new Auth({ authName, email, password });
   const auth = await newAuth.save();
   const newCart = new Cart({ email });
   newCart.save();
@@ -23,7 +16,6 @@ export const register = asyncMiddleware(async (req, res, next) => {
 export const login = asyncMiddleware(async (req, res, next) => {
   const { email, password } = req.body;
   const isExistEmail = await Auth.findOne({ email });
-  console.log(isExistEmail);
   if (!isExistEmail) {
     return next(new ErrorResponse(404, "Email is not found"));
   }

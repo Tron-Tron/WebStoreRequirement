@@ -1,9 +1,11 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import Cart from "../carts/CartModel.js";
+import Product from "../products/productModel.js";
 import Notification from "../notification/notificationModel.js";
 import ErrorResponse from "../utils/errorResponse.js";
 import SuccessResponse from "../utils/successResponse.js";
 import Order from "./orderModel.js";
+import mongoose from "mongoose";
 
 export const createOrder = asyncMiddleware(async (req, res, next) => {
   const { status, cartId, note } = req.body;
@@ -21,8 +23,24 @@ export const createOrder = asyncMiddleware(async (req, res, next) => {
       totalOrder = value.total * value.amountCart + acc;
       return totalOrder;
     }, 0);
+    cart.products.forEach(async (value) => {
+      await Product.findOneAndUpdate(
+        { _id: value.productId },
+        { $inc: { amount: -value.amountCart } },
+        opts
+      );
+    });
 
-    const newOrder = new Order({ cartId, totalOrder, status, note });
+    const productOrder = cart.products;
+    await cart.update({ $set: { products: [] } }, opts);
+
+    const newOrder = new Order({
+      cartId,
+      productOrder,
+      totalOrder,
+      status,
+      note,
+    });
     const createdOrder = await newOrder.save(opts);
     const notifi = new Notification({
       idOrder: createdOrder._id,
@@ -35,7 +53,6 @@ export const createOrder = asyncMiddleware(async (req, res, next) => {
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
-
     return next(new ErrorResponse(400, err));
   }
 });
@@ -75,9 +92,12 @@ export const deleteOrderById = asyncMiddleware(async (req, res, next) => {
 export const updateStatusOrder = asyncMiddleware(async (req, res, next) => {
   const { orderId } = req.params;
   const { status } = req.body;
+  const staff = req.user.email;
   if (!orderId.trim()) {
     return next(new ErrorResponse(400, "orderId is empty"));
   }
+  const checkStaff = await Order.findById(orderId);
+  console.log("checkStaff", checkStaff);
   const order = await Order.findOneAndUpdate(
     { _id: orderId },
     { status },

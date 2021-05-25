@@ -11,6 +11,25 @@ const OrderSchema = new Schema(
       type: String,
       require: [true, "cartId is required"],
     },
+    productOrder: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          require: true,
+          ref: "Product",
+        },
+        amountCart: {
+          type: Number,
+          require: [true, "amount is required"],
+          default: 0,
+        },
+        total: {
+          type: Number,
+          require: [true, "total is required"],
+          default: 0,
+        },
+      },
+    ],
     totalOrder: {
       type: Number,
       require: [true, "totalOrder is required"],
@@ -21,9 +40,10 @@ const OrderSchema = new Schema(
       require: [true, "note is required"],
       default: "No comment",
     },
-    staffId: {
+    emailSatff: {
       type: String,
       require: [true, "staffId is required"],
+      default: "",
     },
   },
   {
@@ -37,11 +57,12 @@ OrderSchema.virtual("cart_detail", {
   foreignField: "_id",
   justOne: true,
 });
-OrderSchema.virtual("staff_detail", {
-  ref: "Staff",
-  localField: "staffId",
-  foreignField: "_id",
+OrderSchema.virtual("staff", {
+  ref: "Auth",
+  localField: "emailStaff",
+  foreignField: "email",
   justOne: true,
 });
+
 const Order = mongoose.model("Order", OrderSchema);
 export default Order;

@@ -9,6 +9,7 @@ export const createCategory = asyncMiddleware(async (req, res, next) => {
   const savedCategory = await newCategory.save();
   return res.status(200).json(new SuccessResponse(200, savedCategory));
 });
+
 export const getCategoryById = asyncMiddleware(async (req, res, next) => {
   const { categoryId } = req.params;
   if (!categoryId.trim()) {

@@ -17,63 +17,17 @@ export const createReportProduct = asyncMiddleware(async (req, res, next) => {
       },
     },
     {
-      $addFields: {
-        cart: { $toObjectId: "$cartId" },
-      },
-    },
-    {
-      $lookup: {
-        from: "carts",
-        localField: "cart",
-        foreignField: "_id",
-        as: "carts",
-      },
-    },
-    {
-      $unwind: "$carts",
-    },
-    {
-      $unwind: "$carts.products",
+      $unwind: "$productOrder",
     },
     {
       $group: {
-        _id: "$carts.products.productId",
-        revenue: { $sum: "$carts.products.total" },
-        total_order: { $sum: "$carts.products.amountCart" },
+        _id: "$productOrder.productId",
+        revenue: { $sum: "$productOrder.total" },
+        total_order: { $sum: "$productOrder.amountCart" },
       },
     },
   ]);
 
-  // const arrProductCart = [];
-  // agg.forEach((value) => {
-  //   value.carts.map((valueCart) => {
-  //     valueCart.products.map((valueProductCart) => {
-  //       arrProductCart.push(valueProductCart);
-  //     });
-  //   });
-  // });
-
-  // const arrProductReport = [];
-  // let product_report = { product_id: "", revenue: 0, total_order: 0 };
-
-  // arrProductCart.forEach((value) => {
-  //   const indexProductReport = arrProductReport.findIndex(
-  //     (valueArr) =>
-  //       valueArr.product_id.toString() === value.productId.toString()
-  //   );
-  //   if (indexProductReport > -1) {
-  //     const report = arrProductReport[indexProductReport];
-  //     report.revenue += value.total;
-  //     report.total_order += value.amountCart;
-  //     arrProductReport[indexProductReport] = report;
-  //   } else {
-  //     product_report = { product_id: "", revenue: 0, total_order: 0 };
-  //     product_report.product_id = value.productId;
-  //     product_report.revenue = value.total;
-  //     product_report.total_order = value.amountCart;
-  //     arrProductReport.push(product_report);
-  //   }
-  // });
   const newReport = new Report({
     from_date,
     to_date,
@@ -94,28 +48,12 @@ export const createReportCategory = asyncMiddleware(async (req, res, next) => {
       },
     },
     {
-      $addFields: {
-        cart: { $toObjectId: "$cartId" },
-      },
-    },
-    {
-      $lookup: {
-        from: "carts",
-        localField: "cart",
-        foreignField: "_id",
-        as: "carts",
-      },
-    },
-    {
-      $unwind: "$carts",
-    },
-    {
-      $unwind: "$carts.products",
+      $unwind: "$productOrder",
     },
     {
       $lookup: {
         from: "products",
-        localField: "carts.products.productId",
+        localField: "productOrder.productId",
         foreignField: "_id",
         as: "cart_product",
       },
@@ -126,12 +64,13 @@ export const createReportCategory = asyncMiddleware(async (req, res, next) => {
     {
       $group: {
         _id: "$cart_product.categoryId",
-        revenue: { $sum: "$carts.products.total" },
-        total_order: { $sum: "$carts.products.amountCart" },
+        revenue: { $sum: "$productOrder.total" },
+        total_order: { $sum: "$productOrder.amountCart" },
       },
     },
   ]);
-  return res.status(200).json(agg);
+  console.log("agg", agg);
+  // return res.status(200).json(agg);
 });
 export const createReportStaff = asyncMiddleware(async (req, res, next) => {
   const { from_date, to_date } = req.body;

@@ -1,15 +1,21 @@
 import dotenv from "dotenv";
+
 dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
+//
+ConnectMongo.getConnect();
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import morganBody from "morgan-body";
-import swaggerJSDoc from "swagger-jsdoc";
+
 import swaggerUi from "swagger-ui-express";
 import ConnectMongo from "./components/commons/database/connectMongo.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import config from "./config/dev.js";
-import swaggerOptions from "./config/swagger.js";
+
+import mySwaggerDocument from "./mySwaggerDocument.json";
+import swagger from "./swagger.json";
+// import routes from "./routes/index.js";
 import auth from "./components/auth/authRoute.js";
 import user from "./components/users/userRouter.js";
 import category from "./components/categories/categoryRouter.js";
@@ -19,33 +25,16 @@ import cart from "./components/carts/cartRouter.js";
 import order from "./components/orders/orderRouter.js";
 import report from "./components/reports/reportRouter.js";
 import notifi from "./components/notification/notificationRouter.js";
+
 const app = express();
-app.use(express.json());
-ConnectMongo.getConnect();
 app.use(express.json());
 
 // middleware
 app.use(cors());
 
-// swagger Documentation
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-const swaggerUiHandler = swaggerUi.setup(swaggerSpec);
-const docsJsonPath = "/api-docs.json";
+const swaggerUiHandler = swaggerUi.setup(mySwaggerDocument);
 
-app.get(docsJsonPath, (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.send(swaggerSpec);
-});
-
-app.use("/docs", swaggerUi.serve, (req, res, next) => {
-  if (!req.query.url) {
-    res.redirect(
-      `/docs?url=${req.protocol}://${req.headers.host}${docsJsonPath}`
-    );
-  } else {
-    swaggerUiHandler(req, res, next);
-  }
-});
+app.use("/docs", swaggerUi.serve, swaggerUiHandler);
 
 app.use(
   bodyParser.json({
@@ -59,7 +48,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // api routes to /api
-// app.use("/api", routes);
+//app.use("/api", routes);
 
 app.use("/auth", auth);
 app.use("/user", user);
@@ -70,7 +59,7 @@ app.use("/cart", cart);
 app.use("/order", order);
 app.use("/report", report);
 app.use("/notifi", notifi);
-
+app.use("/docs", swaggerUi.serve, swaggerUiHandler);
 app.use(errorMiddleware);
 app.listen(config.port, () => {
   console.log(`server is running in port ${config.port}`);

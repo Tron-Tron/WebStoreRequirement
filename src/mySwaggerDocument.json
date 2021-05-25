@@ -1,0 +1,2742 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is WEBSTORE API REQUIREMENT OF TRONTRON",
+    "version": "1.0.5",
+    "title": "Swagger WebStore",
+    "contact": {
+      "email": "lenguyenyenhong1199@gmail.com"
+    }
+  },
+  "host": "http://localhost:5000",
+  "basePath":"/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Everything about login and register of staff and user"
+    },
+    {
+      "name": "User",
+      "description": "Access to User(Customers) - Create, Update, Delete, Get Information Of Customers"
+    },
+    {
+      "name": "Product",
+      "description": "Access to Product"     
+    },
+    {
+      "name": "Category",
+      "description": "Access to Category"     
+    },
+    {
+      "name": "Staff",
+      "description": "Access to Staff - Action of Owners"     
+    },
+    {
+      "name": "Order",
+      "description": "Access to Orders of Customers"     
+    },
+    {
+      "name": "Cart",
+      "description": "Access to Cart"     
+    },
+    {
+      "name": "Report",
+      "description": "Access to Report"     
+    },
+    {
+      "name": "Notification",
+      "description": "Access to Notification"     
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register",
+        "description": "",
+        "operationId": "register",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to Register",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Auth"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"201"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "object",
+                  "properties": {
+                    "authName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format":"email"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "$2a$12$ocan7HgCtjUlqD8nrM.KDug6j1C4/X.RFl1TqIpsqpVL0pztKAN.i"
+                    }
+                  }
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "message":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "message":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+         
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "",
+        "operationId": "login",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AuthLogin"
+            }
+          }
+        ],
+        "responses": {
+          "200":{
+            "description":"Login Successfull",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"201"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "string",
+                   "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGE1YzAwZDQ4NWUyMTBlZmM1MDFhODQiLCJlbWFpbCI6InRyb250cm9uMkBnbWFpbC5jb20iLCJyb2xlIjoiZ3Vlc3QiLCJwZXJtaXNzaW9ucyI6W10sImlhdCI6MTYyMTY1MDE1Mn0.fl6XjgwpUXB3m1Yy_a2TNbk_j3fd4454G3w_XmOPduc"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/all": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get All User",
+        "description": "This action for Staff and Owner - Get All Information of Customers",
+        "operationId": "getAllUsers",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+         
+              "201": {
+                "description": "successful operation",
+                "schema": {
+                  "type":"object",
+                  "properties":{
+                    "code": {
+                      "type":"integer",
+                      "example":"201"
+                    },
+                    "success":{
+                      "type":"boolean",
+                      "example":"true"
+                    },
+                    "data":{
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/User"
+                      }
+                    }
+                  }
+                }
+              },
+              "400":{
+                "description":"Error Validate",
+                "schema": {
+                  "type":"object",
+                  "properties":{
+                    "code": {
+                      "type":"integer",
+                      "example":"400"
+                    },
+                    "success":{
+                      "type":"boolean",
+                      "example":"false"
+                    },
+                    "data":{
+                      "type": "string",
+                      "example":"Validate Error"
+                      }
+                    }
+                  }
+                },
+             "500":{
+              "description":"Server error",
+              "schema": {
+                "type":"object",
+                "properties":{
+                  "code": {
+                    "type":"integer",
+                    "example":"500"
+                  },
+                  "success":{
+                    "type":"boolean",
+                    "example":"false"
+                  },
+                  "data":{
+                    "type": "string",
+                    "example":"Server error"
+                    }
+                  }
+                }
+             }
+             
+            
+          
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Find User by ID",
+        "description": "Returns a single user",
+        "operationId": "getUserById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/User"
+               
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Updates an User in the store with form data",
+        "description": "",
+        "operationId": "updateUserById",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "userName",
+            "in": "formData",
+            "description": "Updated name of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Updated email of the User",
+            "required": false,
+            "type": "string",
+            "format":"email"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "Updated address of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "in": "formData",
+            "description": "Updated phone of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "Updated avatar of the User",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/User"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Deletes an User",
+        "description": "Delete User By Id User",
+        "operationId": "deleteUserById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Delete Successfully"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/user/":{
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create an User in the store with form data",
+        "description": "",
+        "operationId": "updateUserById",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "formData",
+            "description": " Name of the User",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email of the User",
+            "required": true,
+            "type": "string",
+            "format":"email"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "address of the User",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "in": "formData",
+            "description": "phone of the User",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "avatar of the User",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/User"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/category/":{
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Add new Category",
+        "description": "",
+        "operationId": "createCategory",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Category"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "message":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/category/{categoryId}":{
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Find Category by ID",
+        "description": "Returns a single category",
+        "operationId": "getCategoryById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "ID of category to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Category"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "message":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Updates an Category in the store with form data",
+        "description": "",
+        "operationId": "updateCategoryById",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Category"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "message":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Deletes an Category",
+        "description": "Delete Category By Id Category",
+        "operationId": "deleteCategoryById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "categoryId to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Delete Successfully"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/":{
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Add new Product",
+        "description": "",
+        "operationId": "createNewProduct",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          
+            {
+              "name": "productName",
+              "in": "formData",
+              "description": " Name of the Product",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "price",
+              "in": "formData",
+              "description": "price of the Product",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "name": "amount",
+              "in": "formData",
+              "description": "amount of the Product",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "in": "formData",
+              "description": "description of the Product",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "distributor",
+              "in": "formData",
+              "description": "distributor of the Product",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "categoryId",
+              "in": "formData",
+              "description": "categoryId of the Product",
+              "required": true,
+              "type": "string",
+              "ref":"#/definitions/Category"
+            },
+            {
+              "name": "images",
+              "in": "formData",
+              "description": "images of the Product",
+              "required": true,
+              "type": "array",
+              "items":{
+                "type":"file"
+              }
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Product"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/product/{productId}":{
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Find Product by ID",
+        "description": "Returns a single Product",
+        "operationId": "getProductById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "ID of product to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Product"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Updates an Product in the store with form data",
+        "description": "",
+        "operationId": "updateProductById",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "productName",
+            "in": "formData",
+            "description": " Name of the Product",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "price of the Product",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "amount",
+            "in": "formData",
+            "description": "amount of the Product",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description of the Product",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "distributor",
+            "in": "formData",
+            "description": "distributor of the Product",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "formData",
+            "description": "categoryId of the Product",
+            "required": false,
+            "type": "string",
+            "ref":"#/definitions/Category"
+          },
+          {
+            "name": "images",
+            "in": "formData",
+            "description": "images of the Product",
+            "required": false,
+            "type": "array",
+            "items":{
+              "type":"file"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Product"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Deletes an Product",
+        "description": "Delete Product By Id User",
+        "operationId": "deteleProductById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "categoryId to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Delete Successfully"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/staff/":{
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Add new Staff",
+        "description": "",
+        "operationId": "createNewStaff",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Staff"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Staff"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/staff/{staffId}":{
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Find Staff by ID",
+        "description": "Returns a single Staff",
+        "operationId": "getStaffById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "ID of Staff to return",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Staff"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Updates an Staff in the store with form data",
+        "description": "",
+        "operationId": "updateStaffById",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "ID of staff that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "staffName",
+            "in": "body",
+            "description": "Updated name of the Staff",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "body",
+            "description": "Updated email of the Staff",
+            "required": false,
+            "type": "string",
+            "format":"email"
+          },
+          {
+            "name": "address",
+            "in": "body",
+            "description": "Updated address of the Staff",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "in": "body",
+            "description": "Updated phone of the Staff",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  
+                    "$ref": "#/definitions/Staff"             
+                  
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Deletes a Staff",
+        "description": "Delete Stafff By Id Staff",
+        "operationId": "deleteStaffById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Delete Successfully"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+
+    "/cart/{cartId}":{
+      "get": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Find Category by ID",
+        "description": "Returns a single category",
+        "operationId": "getCategoryById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "description": "ID of cart to return",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{                 
+                    "$ref": "#/definitions/Cart"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Updates an Category in the store with form data",
+        "description": "",
+        "operationId": "updateCategoryById",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "body",
+            "description": "productId of product that user wants to add cart",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "amountCart",
+            "in": "body",
+            "description": "amountCart of product that user wants to buy",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"200"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"true"
+                },
+                "data":{                 
+                    "$ref": "#/definitions/Cart"                 
+                }
+              }
+            }
+          },
+          "400":{
+            "description":"Error Validate",
+            "schema": {
+              "type":"object",
+              "properties":{
+                "code": {
+                  "type":"integer",
+                  "example":"400"
+                },
+                "success":{
+                  "type":"boolean",
+                  "example":"false"
+                },
+                "data":{
+                  "type": "string",
+                  "example":"Validate Error"
+                  }
+                }
+              }
+            },
+         "500":{
+          "description":"Server error",
+          "schema": {
+            "type":"object",
+            "properties":{
+              "code": {
+                "type":"integer",
+                "example":"500"
+              },
+              "success":{
+                "type":"boolean",
+                "example":"false"
+              },
+              "data":{
+                "type": "string",
+                "example":"Server error"
+                }
+              }
+            }
+         }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+     
+    },
+    "/order/":{
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Add new Category",
+        "description": "",
+        "operationId": "createCategory",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/order/{orderId}":{
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Find Category by ID",
+        "description": "Returns a single category",
+        "operationId": "getCategoryById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "ID of category to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": [
+              
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Updates an Category in the store with form data",
+        "description": "",
+        "operationId": "updateCategoryById",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "userName",
+            "in": "formData",
+            "description": "Updated name of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Updated email of the User",
+            "required": false,
+            "type": "string",
+            "format":"email"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "Updated address of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "in": "formData",
+            "description": "Updated phone of the User",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "Updated avatar of the User",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Deletes an Category",
+        "description": "Delete Category By Id User",
+        "operationId": "deleteCategoryById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "categoryId to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    }
+    ,
+    "/report/":{
+      "post": {
+        "tags": [
+          "Report"
+        ],
+        "summary": "Add new Category",
+        "description": "",
+        "operationId": "createCategory",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Auth object that needs to login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    },
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://petstore.swagger.io/oauth/authorize",
+      "flow": "implicit",
+      "scopes": {
+        "read:pets": "read your pets",
+        "write:pets": "modify pets in your account"
+      }
+    }
+  },
+  "definitions": {
+    "AuthLogin":{
+      "type": "object",
+      "properties": {     
+        "email": {
+          "type": "string",
+          "format":"email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Auth": {
+      "type": "object",
+      "properties": {
+        "authName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format":"email"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "categoryName": {
+          "type": "string"
+        },
+        "descriptionCategory": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Category"
+      }
+    },
+    "Product": {
+      "type": "object",
+       "properties": {
+        "productName": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "price": {
+          "type":"integer"
+          
+        },
+        "amount": {
+          "type": "string"
+          
+        },
+        "categoryId":{
+          "type":"string",
+          "ref":"#/definitions/Category"
+        },
+        "description":{
+          "type":"string"
+        },
+        "distributor":{
+          "type":"string"
+        },
+        "images":{
+          "type":"array",
+          "items":{
+            "type":"file",
+            "example":"imagename.jpg"
+          }
+        },
+        "remark":{
+          "type":"boolean"
+        }
+        
+       
+      },
+      "xml": {
+        "name": "Product"
+      }
+    },
+    
+    "Order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "productOrder":{
+          "type":"array",
+          "properties":{
+            "productId":{
+              "type":"string"
+            },
+            "amountCart":{
+              "type": "integer"
+            },
+            "total":{
+              "type": "integer"
+            }
+          }
+        },
+        "cartId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "shipDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order Status",
+          "enum": [
+            "placed",
+            "approved",
+            "delivered"
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format":"email"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean",        
+          "description": "User Status"
+        }
+      }
+    },
+    "Staff": {
+      "type": "object",
+      "properties": {
+        "staffName": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean",        
+          "description": "Staff Status"
+        }
+      }
+    },
+    "Cart": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "ref":"#/definitions/Auth"
+        },
+        "products": {
+          "type": "array",
+          "items":{
+            "type":"object",
+            "properties":{
+              "productId":{
+                "type":"string",
+                "example":"60a85e8442e1a71d00392b80",
+                "ref":"#/definitions/Product"
+              },
+              "total":{
+                "type":"integer"
+                },
+                "amountCart":{
+                  "type":"integer"
+                }
+            }
+          }
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean",        
+          "description": "Staff Status"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

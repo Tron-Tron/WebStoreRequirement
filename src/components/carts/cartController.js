@@ -14,16 +14,17 @@ export const updateCart = asyncMiddleware(async (req, res, next) => {
 
   try {
     const opts = { session, returnOriginal: false };
-    let cart = await Cart.findOne({ email: userEmail }, opts);
-    const isExistProduct = await Product.findOneAndUpdate(
-      { _id: productId },
-      { $inc: { amount: -amountCart } },
-      opts
-    );
+    let cart = await Cart.findOne({ email: userEmail }, null, opts);
+    const isExistProduct = await Product.findById(productId);
 
     if (!isExistProduct) {
       return next(
         new ErrorResponse(400, `id product ${productId} is not exist`)
+      );
+    }
+    if (isExistProduct.amount < 0) {
+      return next(
+        new ErrorResponse(400, `id product ${productId} is out of stock`)
       );
     }
     if (cart) {
@@ -33,8 +34,8 @@ export const updateCart = asyncMiddleware(async (req, res, next) => {
 
       if (indexProduct > -1) {
         let product = cart.products[indexProduct];
-        product.amountCart = amountCart;
-        product.total = isExistProduct.price * amountCart;
+        product.amountCart += amountCart;
+        product.total += isExistProduct.price * amountCart;
         cart.products[indexProduct] = product;
       } else {
         const total = amountCart * isExistProduct.price;

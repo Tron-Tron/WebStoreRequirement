@@ -6,6 +6,7 @@ class ConnectMongo {
     this.gfs = null;
   }
   static getConnect() {
+    console.log("process.env.MONGO_URI", process.env.MONGO_URI);
     mongoose
       .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
@@ -13,7 +14,8 @@ class ConnectMongo {
         useUnifiedTopology: true,
         useCreateIndex: true,
       })
-      .then(() => console.log("DB is connected"));
+      .then(() => console.log("DB is connected"))
+      .catch((err) => console.log("DB connect err " + err));
     const conn = mongoose.connection;
     conn.once("open", () => {
       console.log("DB is connected");

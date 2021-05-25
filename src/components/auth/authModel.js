@@ -56,10 +56,10 @@ export const Auth = mongoose.model("Auth", AuthSchema);
 
 export const validateAuth = (auth) => {
   const schema = Joi.object({
-    authName: Joi.string().required(),
+    authName: Joi.string().trim().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().required(),
-    role: Joi.string().required(),
+    password: Joi.string().trim().required(),
+    role: Joi.string().trim(),
   });
   return schema.validate(auth);
 };

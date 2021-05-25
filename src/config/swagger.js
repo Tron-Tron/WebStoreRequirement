@@ -2,18 +2,30 @@ import * as config from "./index.js";
 
 const swaggerDefinition = {
   info: {
-    title: "node-express-es6-airbnb",
-    version: "0.0.1",
-    description:
-      'node-express-es6-airbnb is a project that provides you with a boilerplate tool to create a <a href="https://nodejs.org/en/">node.js</a> API with an ES6 transpiler while following the <a href="https://github.com/airbnb/javascript">Airbnb Javascript (ES6) Style Guide</a>.',
+    title: "WEBSTORE API REQUIREMENT",
+    version: "1.0.0",
+    description: "API FOR INTERNSHIP TRÒN TRÒN",
+    contact: {
+      name: "Lê Nguyễn Yến Hồng",
+      email: "lenguyenyenhong1199@gmail.com",
+    },
   },
-  host: `${config.API_URL}:${config.API_PORT}`,
+  servers: ["http://localhost:5000"],
   basePath: "/",
+  securityDefinitions: {
+    bearerAuth: {
+      type: "apiKey",
+      name: "x-auth-token",
+      scheme: "bearer",
+      in: "header",
+    },
+  },
+  security: [{ bearerAuth: [] }],
 };
 
 const swaggerOptions = {
   swaggerDefinition,
-  apis: ["./src/routes/*.js"],
+  apis: ["./src/components/categories/categoryModel.js"],
 };
 
 export default swaggerOptions;

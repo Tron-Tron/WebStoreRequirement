@@ -8,24 +8,30 @@ import {
   deleteUserById,
 } from "./usersController.js";
 import validateMiddleware from "./../commons/validateMiddleware.js";
-import { validateUser } from "./userModel.js";
+// import { validateUser } from "./userModel.js";
+import UserValidate from "./userValidate.js";
 import authorize from "./../../middleware/authorize.js";
 import upload from "../commons/upload.js";
 
 const router = express.Router();
 router.get("/all", jwtAuth, authorize("owner", "employee"), getAllUsers);
-router.get("/:userId", jwtAuth, getUserById);
+router.get(
+  "/:userId",
+  jwtAuth,
+  validateMiddleware(UserValidate.paramUser, "params"),
+  getUserById
+);
 router.post(
   "/",
   jwtAuth,
   upload.single("avatar"),
-  validateMiddleware(validateUser),
+  validateMiddleware(UserValidate.postUser, "body"),
   createUser
 );
 router.patch(
   "/:userId",
   jwtAuth,
-  validateMiddleware(validateUser),
+  validateMiddleware(UserValidate.paramUser, "params"),
   updateUserById
 );
 router.delete("/:userId", jwtAuth, deleteUserById);
