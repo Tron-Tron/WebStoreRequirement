@@ -7,9 +7,9 @@ import mongoose from "mongoose";
 export const getAllUsers = asyncMiddleware(async (req, res, next) => {
   const users = await User.find();
   if (!users.length) {
-    return next(new ErrorResponse(404, "No users"));
+    throw new ErrorResponse(404, "No users");
   }
-  return res.status(200).json(new SuccessResponse(200, users));
+  return new SuccessResponse(200, users).send(res);
 });
 export const createUser = asyncMiddleware(async (req, res, next) => {
   const { userName, email, address, phone } = req.body;
@@ -33,21 +33,21 @@ export const createUser = asyncMiddleware(async (req, res, next) => {
     });
   }
   const saved_user = await newUser.save();
-  res.status(201).json(new SuccessResponse(201, saved_user));
+  return new SuccessResponse(201, saved_user);
 });
 export const getUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
   const user = await User.findById(userId).catch((error) => {
-    return next(new ErrorResponse(400, `No user has id ${userId}`));
+    throw new ErrorResponse(400, `No user has id ${userId}`);
   });
-  return res.status(200).json(new SuccessResponse(200, user));
+  return new SuccessResponse(200, user).send(res);
 });
 export const updateUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
   const { userName, email, address, phone } = req.body;
   const user = await User.findById(userId);
   if (!user) {
-    return next(new ErrorResponse(404, "User is not found"));
+    throw new ErrorResponse(404, "User is not found");
   }
   user.userName = userName;
   user.email = email;
@@ -55,18 +55,18 @@ export const updateUserById = asyncMiddleware(async (req, res, next) => {
   user.phone = phone;
   const updatedUser = await user.save();
   if (!updatedUser) {
-    return next(new ErrorResponse(400, "Can not update"));
+    throw new ErrorResponse(400, "Can not update");
   }
-  res.status(200).json(new SuccessResponse(200, updatedUser));
+  return new SuccessResponse(200, updatedUser).send(res);
 });
 
 export const deleteUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
   if (!userId.trim()) {
-    return next(new ErrorResponse(400, "userId is empty"));
+    throw new ErrorResponse(400, "userId is empty");
   }
   if (!mongoose.isValidObjectId(userId)) {
-    return next(new ErrorResponse(400, "Id is invalid"));
+    throw new ErrorResponse(400, "Id is invalid");
   }
   const deletedUser = await User.findOneAndUpdate(
     { _id: userId },
@@ -74,9 +74,7 @@ export const deleteUserById = asyncMiddleware(async (req, res, next) => {
     { new: true }
   );
   if (!deletedUser) {
-    return next(new ErrorResponse(404, "No user"));
+    throw new ErrorResponse(404, "No user");
   }
-  return res
-    .status(200)
-    .json(new SuccessResponse(200, `Deleted User has id ${userId}`));
+  return new SuccessResponse(200, `Deleted User has id ${userId}`).send(res);
 });

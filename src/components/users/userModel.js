@@ -36,28 +36,3 @@ const UserSchema = new Schema(
 );
 
 export const User = mongoose.model("User", UserSchema);
-export const validateUser = () => {
-  // const schema = Joi.object({
-  //   userName: Joi.string().required(),
-  //   email: Joi.string().email().required(),
-  //   address: Joi.string().required(),
-  //   phone: Joi.string()
-  //     .pattern(
-  //       new RegExp("/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im")
-  //     )
-  //     .required(),
-  // });
-  const schema = {
-    postUser: Joi.object().keys({
-      userName: Joi.string().required(),
-      email: Joi.string().email().required(),
-      address: Joi.string().required(),
-      phone: Joi.string()
-        .pattern(
-          new RegExp("/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im")
-        )
-        .required(),
-    }),
-  };
-  return schema;
-};

@@ -7,7 +7,7 @@ import {
   createNewProduct,
   getAllProducts,
   getProductById,
-  deteleProductById,
+  deleteProductById,
   updateProductById,
   searchProductByName,
 } from "./productController.js";
@@ -29,7 +29,7 @@ router.post(
 );
 router.get("/all", getAllProducts);
 router.get("/:productId", getProductById);
-router.delete("/:productId", deteleProductById);
+router.delete("/:productId", deleteProductById);
 router.patch("/:productId", updateProductById);
 router.get("/", searchProductByName);
 

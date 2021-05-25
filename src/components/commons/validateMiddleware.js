@@ -18,7 +18,7 @@ const validateMiddleware = (schema, property) => {
     const { error } = schema.validate(req[property]);
 
     if (error) {
-      return next(new ErrorResponse(400, error.details[0].message));
+      throw new ErrorResponse(400, error.details[0].message);
     }
     next();
   };

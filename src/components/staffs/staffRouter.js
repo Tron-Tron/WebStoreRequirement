@@ -2,7 +2,8 @@ import express from "express";
 import authorize from "../../middleware/authorize.js";
 import jwtAuth from "../../middleware/jwtAuth.js";
 import validateMiddleware from "./../commons/validateMiddleware.js";
-import { validateStaff } from "./staffModel.js";
+import StaffValidate from "./staffValidate.js";
+
 import {
   createNewStaff,
   getStaffById,
@@ -14,10 +15,26 @@ import {
 const router = express.Router();
 router.use(jwtAuth, authorize("owner"));
 
-router.post("/", validateMiddleware(validateStaff), createNewStaff);
+router.post(
+  "/",
+  validateMiddleware(StaffValidate.postStaff, "body"),
+  createNewStaff
+);
 router.get("/all", getAllStaffs);
-router.get("/:staffId", getStaffById);
-router.patch("/:staffId", validateMiddleware(validateStaff), updateStaffById);
-router.delete("/:staffId", deleteStaffById);
+router.get(
+  "/:staffId",
+  validateMiddleware(StaffValidate.paramStaff, "params"),
+  getStaffById
+);
+router.patch(
+  "/:staffId",
+  validateMiddleware(StaffValidate.paramStaff, "params"),
+  updateStaffById
+);
+router.delete(
+  "/:staffId",
+  validateMiddleware(StaffValidate.paramStaff, "params"),
+  deleteStaffById
+);
 
 export default router;

@@ -24,33 +24,33 @@ export const createNewStaff = asyncMiddleware(async (req, res, next) => {
     permissions,
   });
   await newAuth.save();
-  return res.status(200).json(new SuccessResponse(200, savedStaff));
+  return new SuccessResponse(200, savedStaff).send(res);
 });
 
 export const getAllStaffs = asyncMiddleware(async (req, res, next) => {
   const staffs = await Staff.find();
   if (!staffs.length) {
-    return next(new ErrorResponse(400, "No Staffs"));
+    throw new ErrorResponse(400, "No Staffs");
   }
-  res.status(200).json(new SuccessResponse(200, staffs));
+  return new SuccessResponse(200, staffs).send(res);
 });
 export const getStaffById = asyncMiddleware(async (req, res, next) => {
   const { staffId } = req.params;
   if (!staffId.trim()) {
-    return next(new ErrorResponse(400, "staffId is empty"));
+    throw new ErrorResponse(400, "staffId is empty");
   }
   const staff = await Staff.findById(staffId);
   if (!staff) {
-    return next(new ErrorResponse(400, `No staff has id ${staffId}`));
+    throw new ErrorResponse(400, `No staff has id ${staffId}`);
   }
-  return res.status(200).json(new SuccessResponse(200, staff));
+  return new SuccessResponse(200, staff).send(res);
 });
 
 export const updateStaffById = asyncMiddleware(async (req, res, next) => {
   const { staffId } = req.params;
 
   if (!staffId.trim()) {
-    return next(new ErrorResponse(400, "staffId is empty"));
+    throw new ErrorResponse(400, "staffId is empty");
   }
   const updatedStaff = await Staff.findOneAndUpdate(
     { _id: staffId },
@@ -58,16 +58,16 @@ export const updateStaffById = asyncMiddleware(async (req, res, next) => {
     { new: true }
   );
   if (!updatedStaff) {
-    return next(new ErrorResponse(400, `No staff has id ${staffId}`));
+    throw new ErrorResponse(400, `No staff has id ${staffId}`);
   }
-  return res.status(200).json(new SuccessResponse(200, updatedStaff));
+  return new SuccessResponse(200, updatedStaff).send(res);
 });
 
 export const deleteStaffById = asyncMiddleware(async (req, res, next) => {
   const { staffId } = req.params;
 
   if (!staffId.trim()) {
-    return next(new ErrorResponse(400, "staffId is empty"));
+    throw new ErrorResponse(400, "staffId is empty");
   }
   const deletedStaff = await Staff.findOneAndUpdate(
     { _id: staffId },
@@ -75,9 +75,7 @@ export const deleteStaffById = asyncMiddleware(async (req, res, next) => {
     { new: true }
   );
   if (!deletedStaff) {
-    return next(new ErrorResponse(404, "No user"));
+    throw new ErrorResponse(404, "No user");
   }
-  return res
-    .status(200)
-    .json(new SuccessResponse(200, `Deleted User has id ${staffId}`));
+  return new SuccessResponse(200, `Deleted User has id ${staffId}`).send(res);
 });

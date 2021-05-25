@@ -20,25 +20,47 @@ export const createReportProduct = asyncMiddleware(async (req, res, next) => {
       $unwind: "$productOrder",
     },
     {
+      $lookup: {
+        from: "products",
+        localField: "productOrder.productId",
+        foreignField: "_id",
+        as: "product-detail",
+      },
+    },
+    {
+      $unwind: "$product-detail",
+    },
+    {
       $group: {
         _id: "$productOrder.productId",
-        revenue: { $sum: "$productOrder.total" },
+        revenue: {
+          $sum: {
+            $multiply: ["$product-detail.price", "$productOrder.amountCart"],
+          },
+        },
         total_order: { $sum: "$productOrder.amountCart" },
       },
     },
+    {
+      $project: {
+        productId: "$_id",
+        amount: "$total_order",
+        revenue: "$revenue",
+      },
+    },
   ]);
-
-  const newReport = new Report({
-    from_date,
-    to_date,
-    product_report: aggProduct,
-  });
-  await newReport.save();
-  return res.status(200).json(new SuccessResponse(200, newReport));
+  console.log(aggProduct);
+  // const newReport = new Report({
+  //   from_date,
+  //   to_date,
+  //   product_report: aggProduct,
+  // });
+  // await newReport.save();
+  // return new SuccessResponse(200, newReport).send(res);
 });
 export const createReportCategory = asyncMiddleware(async (req, res, next) => {
   const { from_date, to_date } = req.body;
-  const agg = await Order.aggregate([
+  const newReport = await Order.aggregate([
     {
       $match: {
         updatedAt: {
@@ -64,13 +86,16 @@ export const createReportCategory = asyncMiddleware(async (req, res, next) => {
     {
       $group: {
         _id: "$cart_product.categoryId",
-        revenue: { $sum: "$productOrder.total" },
+        revenue: {
+          $sum: {
+            $multiply: ["$product-detail.price", "$productOrder.amountCart"],
+          },
+        },
         total_order: { $sum: "$productOrder.amountCart" },
       },
     },
   ]);
-  console.log("agg", agg);
-  // return res.status(200).json(agg);
+  return new SuccessResponse(200, newReport).send(res);
 });
 export const createReportStaff = asyncMiddleware(async (req, res, next) => {
   const { from_date, to_date } = req.body;

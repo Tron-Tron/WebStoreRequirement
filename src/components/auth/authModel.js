@@ -53,13 +53,3 @@ AuthSchema.statics.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 };
 export const Auth = mongoose.model("Auth", AuthSchema);
-
-export const validateAuth = (auth) => {
-  const schema = Joi.object({
-    authName: Joi.string().trim().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().trim().required(),
-    role: Joi.string().trim(),
-  });
-  return schema.validate(auth);
-};

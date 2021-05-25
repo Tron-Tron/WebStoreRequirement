@@ -4,13 +4,11 @@ const authorize =
   (...roles) =>
   (req, res, next) => {
     if (!req.user) {
-      return next(new ErrorResponse(401, "Unauthorization"));
+      throw new ErrorResponse(401, "Unauthorized");
     }
-    console.log(req.user);
+
     if (!roles.includes(req.user.role)) {
-      return next(
-        new ErrorResponse(403, "Don't have permission to access this user")
-      );
+      throw new ErrorResponse(403, "Don't have permission to access this user");
     }
     next();
   };

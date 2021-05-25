@@ -23,11 +23,6 @@ const OrderSchema = new Schema(
           require: [true, "amount is required"],
           default: 0,
         },
-        total: {
-          type: Number,
-          require: [true, "total is required"],
-          default: 0,
-        },
       },
     ],
     totalOrder: {

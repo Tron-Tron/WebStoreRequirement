@@ -18,14 +18,10 @@ export const updateCart = asyncMiddleware(async (req, res, next) => {
     const isExistProduct = await Product.findById(productId);
 
     if (!isExistProduct) {
-      return next(
-        new ErrorResponse(400, `id product ${productId} is not exist`)
-      );
+      throw new ErrorResponse(400, `id product ${productId} is not exist`);
     }
     if (isExistProduct.amount < 0) {
-      return next(
-        new ErrorResponse(400, `id product ${productId} is out of stock`)
-      );
+      throw new ErrorResponse(400, `id product ${productId} is out of stock`);
     }
     if (cart) {
       const indexProduct = cart.products.findIndex(
@@ -35,34 +31,32 @@ export const updateCart = asyncMiddleware(async (req, res, next) => {
       if (indexProduct > -1) {
         let product = cart.products[indexProduct];
         product.amountCart += amountCart;
-        product.total += isExistProduct.price * amountCart;
         cart.products[indexProduct] = product;
       } else {
-        const total = amountCart * isExistProduct.price;
-        cart.products.push({ productId, amountCart, total });
+        cart.products.push({ productId, amountCart });
       }
     }
     cart = await cart.save(opts);
     await session.commitTransaction();
     session.endSession();
-    return res.status(200).json(new SuccessResponse(200, cart));
+    return new SuccessResponse(200, cart).send(res);
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
     console.log(err);
-    return next(new ErrorResponse(400, err));
+    throw new ErrorResponse(400, err);
   }
 });
 export const getAllCartById = asyncMiddleware(async (req, res, next) => {
   const { cartId } = req.params;
   if (!cartId.trim()) {
-    return next(new ErrorResponse(400, "cartId is empty"));
+    throw new ErrorResponse(400, "cartId is empty");
   }
   const cart = await Cart.findById(cartId)
     .populate("products.productId")
     .populate("user");
   if (!cart) {
-    return next(new ErrorResponse(400, `No cart has id ${cartId}`));
+    throw new ErrorResponse(400, `No cart has id ${cartId}`);
   }
-  return res.status(200).json(new SuccessResponse(200, cart));
+  return new SuccessResponse(200, cart).send(res);
 });

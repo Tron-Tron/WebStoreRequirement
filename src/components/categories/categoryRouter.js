@@ -1,6 +1,8 @@
 import express from "express";
 import authorize from "../../middleware/authorize.js";
 import jwtAuth from "../../middleware/jwtAuth.js";
+import CategoryValidate from "./categoryValidate.js";
+import validateMiddleware from "../commons/validateMiddleware.js";
 import {
   createCategory,
   getCategoryById,
@@ -10,22 +12,29 @@ import {
 } from "./categoryController.js";
 
 const router = express.Router();
-// router.use(jwtAuth, authorize("owner", "employee"));
+router.use(jwtAuth, authorize("owner", "employee"));
 
-router.post("/", createCategory);
-/**
- * @swagger
- * /:
- *  get:
- *   summary: get all categories
- *   description: get all categories
- *   responses:
- *    200:
- *     description: success
- */
+router.post(
+  "/",
+  validateMiddleware(CategoryValidate.postCategory, "body"),
+  createCategory
+);
+
 router.get("/all", getAllCategories);
-router.get("/:categoryId", getCategoryById);
-router.patch("/:categoryId", updateCategoryById);
-router.delete("/:categoryId", deleteCategoryById);
+router.get(
+  "/:categoryId",
+  validateMiddleware(CategoryValidate.paramCategory, "params"),
+  getCategoryById
+);
+router.patch(
+  "/:categoryId",
+  validateMiddleware(CategoryValidate.paramCategory, "params"),
+  updateCategoryById
+);
+router.delete(
+  "/:categoryId",
+  validateMiddleware(CategoryValidate.paramCategory, "params"),
+  deleteCategoryById
+);
 
 export default router;

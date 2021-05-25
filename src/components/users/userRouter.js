@@ -8,7 +8,6 @@ import {
   deleteUserById,
 } from "./usersController.js";
 import validateMiddleware from "./../commons/validateMiddleware.js";
-// import { validateUser } from "./userModel.js";
 import UserValidate from "./userValidate.js";
 import authorize from "./../../middleware/authorize.js";
 import upload from "../commons/upload.js";

@@ -11,20 +11,20 @@ export const register = asyncMiddleware(async (req, res, next) => {
   const auth = await newAuth.save();
   const newCart = new Cart({ email });
   newCart.save();
-  return res.status(201).json(new SuccessResponse(201, auth));
+  return new SuccessResponse(201, auth).send(res);
 });
 export const login = asyncMiddleware(async (req, res, next) => {
   const { email, password } = req.body;
   const isExistEmail = await Auth.findOne({ email });
   if (!isExistEmail) {
-    return next(new ErrorResponse(404, "Email is not found"));
+    throw new ErrorResponse(404, "Email is not found");
   }
   const isMatchPassword = await Auth.comparePassword(
     password,
     isExistEmail.password
   );
   if (!isMatchPassword) {
-    return next(new ErrorResponse(404, "Password is incorrect"));
+    throw new ErrorResponse(404, "Password is incorrect");
   }
   const token = jwt.sign(
     {
@@ -35,5 +35,5 @@ export const login = asyncMiddleware(async (req, res, next) => {
     },
     process.env.JWT_KEY
   );
-  return res.status(200).json(new SuccessResponse(200, token));
+  return new SuccessResponse(200, token).send(res);
 });

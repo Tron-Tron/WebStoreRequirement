@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(jwtAuth, authorize("guest"));
 router.post("/", createOrder);
 router.get("/:orderId", getOrderById);
-router.delete("/:orderId", deleteOrderById);
+router.delete("/:orderId", jwtAuth, authorize("guest"), deleteOrderById);
 router.patch(
   "/:orderId",
   jwtAuth,
@@ -19,3 +19,10 @@ router.patch(
   updateStatusOrder
 );
 export default router;
+
+// use('/order')
+
+// use('/user', checkUser)
+// /api/order/me {page, limit, status, }
+// order[]
+// /api/{component}/{object}/{action}

@@ -8,18 +8,18 @@ const jwtAuth = async (req, res, next) => {
     : null;
 
   if (!token) {
-    return next(new ErrorResponse(401, "Unauthorized"));
+    throw new ErrorResponse(401, "Unauthorized");
   }
   try {
     const payload = jwt.verify(token, process.env.JWT_KEY);
     const user = await Auth.findOne({ email: payload.email });
     if (!user) {
-      return next(new ErrorResponse(401, "Unauthorized"));
+      throw new ErrorResponse(401, "Unauthorized");
     }
     req.user = payload;
     next();
   } catch (error) {
-    return next(new ErrorResponse(401, "Unauthorized"));
+    throw new ErrorResponse(401, "Unauthorized");
   }
 };
 

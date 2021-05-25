@@ -35,16 +35,3 @@ const StaffSchema = new Schema(
   }
 );
 export const Staff = mongoose.model("Staff", StaffSchema);
-export const validateStaff = (staff) => {
-  const schema = Joi.object({
-    staffName: Joi.string().trim().required(),
-    email: Joi.string().trim().email().required(),
-    address: Joi.string().required(),
-    phone: Joi.string()
-      .trim()
-      .pattern(/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im)
-      .required(),
-    dateOfBirth: Joi.date().required(),
-  }).unknown(true);
-  return schema.validate(staff);
-};
