@@ -1,11 +1,11 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import SuccessResponse from "../utils/SuccessResponse.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
-import { User } from "./userModel.js";
+import { userService } from "./userService.js";
 import mongoose from "mongoose";
 
 export const getAllUsers = asyncMiddleware(async (req, res, next) => {
-  const users = await User.find();
+  const users = await userService.getAll();
   if (!users.length) {
     throw new ErrorResponse(404, "No users");
   }
@@ -16,7 +16,7 @@ export const createUser = asyncMiddleware(async (req, res, next) => {
   const accLogin = req.user.email;
   let newUser;
   if (req.user.role === "guest") {
-    newUser = new User({
+    newUser = await userService.create({
       userName,
       email: accLogin,
       address,
@@ -24,7 +24,7 @@ export const createUser = asyncMiddleware(async (req, res, next) => {
       avatar: req.file.filename,
     });
   } else {
-    newUser = new User({
+    newUser = await userService.create({
       userName,
       email,
       address,
@@ -32,12 +32,11 @@ export const createUser = asyncMiddleware(async (req, res, next) => {
       avatar: req.file.filename,
     });
   }
-  const saved_user = await newUser.save();
-  return new SuccessResponse(201, saved_user);
+  return new SuccessResponse(201, newUser);
 });
 export const getUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
-  const user = await User.findById(userId).catch((error) => {
+  const user = await userService.findById(userId).catch((error) => {
     throw new ErrorResponse(400, `No user has id ${userId}`);
   });
   return new SuccessResponse(200, user).send(res);
@@ -45,7 +44,7 @@ export const getUserById = asyncMiddleware(async (req, res, next) => {
 export const updateUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
   const { userName, email, address, phone } = req.body;
-  const user = await User.findById(userId);
+  const user = await userService.findById(userId);
   if (!user) {
     throw new ErrorResponse(404, "User is not found");
   }
@@ -53,7 +52,7 @@ export const updateUserById = asyncMiddleware(async (req, res, next) => {
   user.email = email;
   user.address = address;
   user.phone = phone;
-  const updatedUser = await user.save();
+  const updatedUser = await userService.save(user);
   if (!updatedUser) {
     throw new ErrorResponse(400, "Can not update");
   }
@@ -62,13 +61,8 @@ export const updateUserById = asyncMiddleware(async (req, res, next) => {
 
 export const deleteUserById = asyncMiddleware(async (req, res, next) => {
   const { userId } = req.params;
-  if (!userId.trim()) {
-    throw new ErrorResponse(400, "userId is empty");
-  }
-  if (!mongoose.isValidObjectId(userId)) {
-    throw new ErrorResponse(400, "Id is invalid");
-  }
-  const deletedUser = await User.findOneAndUpdate(
+
+  const deletedUser = await userService.findOneAndUpdate(
     { _id: userId },
     { isActive: false },
     { new: true }

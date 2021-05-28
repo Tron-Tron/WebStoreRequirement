@@ -11,7 +11,7 @@ import swaggerUi from "swagger-ui-express";
 import ConnectMongo from "./components/commons/database/connectMongo.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import root from "./routes/root.js";
-import mySwaggerDocument from "./mySwaggerDocument.json";
+import docSwagger from "./components/docs/docSwagger.json";
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,7 @@ app.use(express.json());
 // middleware
 app.use(cors());
 
-const swaggerUiHandler = swaggerUi.setup(mySwaggerDocument);
+const swaggerUiHandler = swaggerUi.setup(docSwagger);
 
 if (process.env.NODE_ENV === "development") {
   morganBody(app);

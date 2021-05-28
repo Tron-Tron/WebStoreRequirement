@@ -16,11 +16,11 @@ const ReportSchema = new Schema(
         return this.to_date.getTime() > this.from_date.getTime();
       },
     },
-    product_report: [
+    report: [
       {
-        product_id: {
+        _id: {
           type: String,
-          require: [true, "product_id is required"],
+          require: [true, "_id is required"],
           ref: "Cart",
         },
         revenue: {
@@ -34,38 +34,6 @@ const ReportSchema = new Schema(
         },
       },
     ],
-    category_report: [
-      {
-        category_id: {
-          type: String,
-          require: [true, "category_id is required"],
-        },
-        revenue: {
-          type: String,
-          require: [true, "revenue is required"],
-        },
-        total_order: {
-          type: Number,
-          require: [true, "total_order is required"],
-        },
-      },
-    ],
-    // staff_report: [
-    //   {
-    //     staff_id: {
-    //       type: String,
-    //       require: [true, "category_id is required"],
-    //     },
-    //     revenue: {
-    //       type: String,
-    //       require: [true, "revenue is required"],
-    //     },
-    //     total_order: {
-    //       type: Number,
-    //       require: [true, "total_order is required"],
-    //     },
-    //   },
-    // ],
   },
   { timestamps: true }
 );

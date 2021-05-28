@@ -1,10 +1,16 @@
 import express from "express";
 import {
   getAllNotification,
-  getNotifiByOrderId,
+  getNotificationByOrderId,
 } from "./notificationController.js";
+import notificationValidate from "./notificationValidate.js";
+import validateMiddleware from "../commons/validateMiddleware.js";
 const router = express.Router();
 router.get("/", getAllNotification);
-router.get("/:idOrder", getNotifiByOrderId);
+router.get(
+  "/:idOrder",
+  validateMiddleware(notificationValidate.paramCategory, "params"),
+  getNotificationByOrderId
+);
 
 export default router;

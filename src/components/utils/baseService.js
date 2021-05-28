@@ -1,10 +1,20 @@
 export const baseService = (model) => {
-  // const findById = async (...options) => {
-  //   try {
-  //     const item = await model.findById(...options);
-  //     return item;
-  //   } catch (e) {}
-  // };
+  const findOne = async (options, select = null, populate = null) => {
+    try {
+      const item = await model.findOne(options, select).populate(populate);
+      return item;
+    } catch (error) {
+      throw error;
+    }
+  };
+  const create = async (data, option = null) => {
+    try {
+      const item = new model(data);
+      return item.save(option);
+    } catch (error) {
+      throw error;
+    }
+  };
   const findOneAndUpdate = async (...options) => {
     try {
       console.log(options);
@@ -23,15 +33,27 @@ export const baseService = (model) => {
       throw errors;
     }
   };
-  const findById = async (populate, ...condition) => {
+  const getById = async (id, select = null, populate = null) => {
     try {
-      console.log(condition);
-      console.log(...populate);
-      const item = await model.findById(condition).populate(...populate);
+      console.log(id);
+      console.log(select);
+      const item = await model.findById(id, select).populate(populate);
+      console.log(item);
       return item;
     } catch (errors) {
       throw errors;
     }
   };
-  return { findById, findOneAndUpdate, findByIdAndDelete };
+  const getAll = async (condition = null, select = null, populate = null) => {
+    const item = model.find(condition, select).populate(populate);
+    return item;
+  };
+  return {
+    getById,
+    findOneAndUpdate,
+    findByIdAndDelete,
+    create,
+    findOne,
+    getAll,
+  };
 };

@@ -1,14 +1,14 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
-import Product from "./productModel.js";
+
 import SuccessResponse from "../utils/SuccessResponse.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
-import Category from "../categories/categoryModel.js";
+import { categoryService } from "../categories/categoryService.js";
 import { productService } from "./productService.js";
 
 export const createNewProduct = asyncMiddleware(async (req, res, next) => {
   const { productName, price, amount, description, distributor, categoryId } =
     req.body;
-  const checkCategory = await Category.findById(categoryId);
+  const checkCategory = await categoryService.getById(categoryId);
   if (!checkCategory) {
     throw new ErrorResponse(400, "Category is not exist");
   }
@@ -19,7 +19,7 @@ export const createNewProduct = asyncMiddleware(async (req, res, next) => {
     return val.filename;
   });
 
-  const newProduct = new Product({
+  const createdProduct = await productService.create({
     productName,
     price,
     amount,
@@ -28,12 +28,11 @@ export const createNewProduct = asyncMiddleware(async (req, res, next) => {
     distributor,
     categoryId,
   });
-  const createdProduct = await newProduct.save();
   return new SuccessResponse(200, createdProduct).send(res);
 });
 
 export const getAllProducts = asyncMiddleware(async (req, res, next) => {
-  const products = await Product.find().populate("category_detail");
+  const products = await productService.getAll(null, null, "category_detail");
   if (!products.length) {
     throw new ErrorResponse(400, "No Products");
   }
@@ -42,15 +41,10 @@ export const getAllProducts = asyncMiddleware(async (req, res, next) => {
 
 export const getProductById = asyncMiddleware(async (req, res, next) => {
   const { productId } = req.params;
-  if (!productId.trim()) {
-    throw new ErrorResponse(400, "productId is empty");
-  }
-  // const product = await productService
-  //   .findById(productId)
-  //   .populate("category_detail");
-  const product = await productService.findById(
+
+  const product = await productService.getById(
     productId,
-    "productName",
+    null,
     "category_detail"
   );
 
@@ -65,7 +59,7 @@ export const deleteProductById = asyncMiddleware(async (req, res, next) => {
   if (!productId.trim()) {
     throw new ErrorResponse(400, "productId is empty");
   }
-  const deletedProduct = await Product.findByIdAndDelete(productId);
+  const deletedProduct = await productService.findByIdAndDelete(productId);
   if (!deletedProduct) {
     throw new ErrorResponse(400, `No product has id ${productId}`);
   }
@@ -74,10 +68,8 @@ export const deleteProductById = asyncMiddleware(async (req, res, next) => {
 
 export const updateProductById = asyncMiddleware(async (req, res, next) => {
   const { productId } = req.params;
-  if (!productId.trim()) {
-    throw new ErrorResponse(400, "productId is empty");
-  }
-  const updatedProduct = await Product.findOneAndUpdate(
+
+  const updatedProduct = await productService.findOneAndUpdate(
     { _id: productId },
     req.body,
     { new: true }
@@ -89,7 +81,7 @@ export const updateProductById = asyncMiddleware(async (req, res, next) => {
 });
 export const searchProductByName = asyncMiddleware(async (req, res, next) => {
   const { keyName } = req.query;
-  const productArr = await Product.find();
+  const productArr = await productService.getAll(null, "productName");
   const searchedProduct = productArr.filter((value) => {
     return (
       value.productName.toLowerCase().indexOf(keyName.toLowerCase()) !== -1

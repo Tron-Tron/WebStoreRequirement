@@ -1,22 +1,45 @@
 import express from "express";
 import {
   createOrder,
-  getOrderById,
-  deleteOrderById,
+  getOrder,
+  deleteOrderByIdOfUser,
+  deleteOrderByIdOfAdmin,
   updateStatusOrder,
+  getOrderOfUser,
 } from "./orderController.js";
+import orderValidate from "./orderValidate.js";
+import validateMiddleware from "../commons/validateMiddleware.js";
 import authorize from "../../middleware/authorize.js";
 import jwtAuth from "../../middleware/jwtAuth.js";
 const router = express.Router();
-router.use(jwtAuth, authorize("guest"));
-router.post("/", createOrder);
-router.get("/:orderId", getOrderById);
-router.delete("/:orderId", jwtAuth, authorize("guest"), deleteOrderById);
-router.patch(
+const routerStaff = express.Router();
+const routerUser = express.Router();
+router.use("/user", routerUser);
+routerUser.use(jwtAuth, authorize("guest"));
+routerUser.post("/", createOrder);
+routerUser.get("/", getOrder);
+routerUser.delete(
   "/:orderId",
-  jwtAuth,
-  authorize("owner", "employee"),
+  validateMiddleware(orderValidate.paramOrder, "params"),
+  deleteOrderByIdOfUser
+);
+
+router.use("/staff", routerStaff);
+routerStaff.use(jwtAuth, authorize("employee", "owner"));
+routerStaff.patch(
+  "/:orderId",
+  validateMiddleware(orderValidate.paramOrder, "params"),
   updateStatusOrder
+);
+routerStaff.get(
+  "/:cartId",
+  validateMiddleware(orderValidate.paramCart, "params"),
+  getOrderOfUser
+);
+routerStaff.delete(
+  "/:orderId",
+  validateMiddleware(orderValidate.paramOrder, "params"),
+  deleteOrderByIdOfAdmin
 );
 export default router;
 

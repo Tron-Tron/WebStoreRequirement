@@ -1,8 +1,8 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
-import { Auth } from "../auth/authModel.js";
+import { authService } from "../auth/authService.js";
 import ErrorResponse from "../utils/errorResponse.js";
 import SuccessResponse from "../utils/successResponse.js";
-import { Staff } from "./staffModel.js";
+import { staffService } from "./staffService.js";
 
 export const createNewStaff = asyncMiddleware(async (req, res, next) => {
   const {
@@ -14,21 +14,26 @@ export const createNewStaff = asyncMiddleware(async (req, res, next) => {
     password,
     permissions,
   } = req.body;
-  const newStaff = new Staff({ staffName, dateOfBirth, address, phone, email });
-  const savedStaff = await newStaff.save();
-  const newAuth = new Auth({
+
+  const savedStaff = await staffService.create({
+    staffName,
+    dateOfBirth,
+    address,
+    phone,
+    email,
+  });
+  await authService.create({
     authName: staffName,
     email,
     password,
     role: "employee",
     permissions,
   });
-  await newAuth.save();
   return new SuccessResponse(200, savedStaff).send(res);
 });
 
 export const getAllStaffs = asyncMiddleware(async (req, res, next) => {
-  const staffs = await Staff.find();
+  const staffs = await staffService.getAll();
   if (!staffs.length) {
     throw new ErrorResponse(400, "No Staffs");
   }
@@ -36,10 +41,7 @@ export const getAllStaffs = asyncMiddleware(async (req, res, next) => {
 });
 export const getStaffById = asyncMiddleware(async (req, res, next) => {
   const { staffId } = req.params;
-  if (!staffId.trim()) {
-    throw new ErrorResponse(400, "staffId is empty");
-  }
-  const staff = await Staff.findById(staffId);
+  const staff = await staffService.findById(staffId);
   if (!staff) {
     throw new ErrorResponse(400, `No staff has id ${staffId}`);
   }
@@ -52,7 +54,7 @@ export const updateStaffById = asyncMiddleware(async (req, res, next) => {
   if (!staffId.trim()) {
     throw new ErrorResponse(400, "staffId is empty");
   }
-  const updatedStaff = await Staff.findOneAndUpdate(
+  const updatedStaff = await staffService.findOneAndUpdate(
     { _id: staffId },
     req.body,
     { new: true }
@@ -65,11 +67,7 @@ export const updateStaffById = asyncMiddleware(async (req, res, next) => {
 
 export const deleteStaffById = asyncMiddleware(async (req, res, next) => {
   const { staffId } = req.params;
-
-  if (!staffId.trim()) {
-    throw new ErrorResponse(400, "staffId is empty");
-  }
-  const deletedStaff = await Staff.findOneAndUpdate(
+  const deletedStaff = await staffService.findOneAndUpdate(
     { _id: staffId },
     { isActive: false },
     { new: true }

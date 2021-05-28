@@ -1,10 +1,9 @@
 import asyncMiddleware from "../../middleware/asyncMiddleware.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 import SuccessResponse from "../utils/SuccessResponse.js";
-import Report from "./reportModel.js";
-import mongoose from "mongoose";
+import { orderService } from "../orders/orderService.js";
 import Order from "../orders/orderModel.js";
-import Cart from "../carts/CartModel.js";
+
 export const createReportProduct = asyncMiddleware(async (req, res, next) => {
   const { from_date, to_date } = req.body;
   const aggProduct = await Order.aggregate([
@@ -49,18 +48,18 @@ export const createReportProduct = asyncMiddleware(async (req, res, next) => {
       },
     },
   ]);
-  console.log(aggProduct);
-  // const newReport = new Report({
-  //   from_date,
-  //   to_date,
-  //   product_report: aggProduct,
-  // });
-  // await newReport.save();
-  // return new SuccessResponse(200, newReport).send(res);
+
+  const newReport = new Report({
+    from_date,
+    to_date,
+    report: aggProduct,
+  });
+  await newReport.save();
+  return new SuccessResponse(200, newReport).send(res);
 });
 export const createReportCategory = asyncMiddleware(async (req, res, next) => {
   const { from_date, to_date } = req.body;
-  const newReport = await Order.aggregate([
+  const aggCategory = await Order.aggregate([
     {
       $match: {
         updatedAt: {
@@ -95,56 +94,11 @@ export const createReportCategory = asyncMiddleware(async (req, res, next) => {
       },
     },
   ]);
-  return new SuccessResponse(200, newReport).send(res);
-});
-export const createReportStaff = asyncMiddleware(async (req, res, next) => {
-  const { from_date, to_date } = req.body;
-  const agg = await Order.aggregate([
-    {
-      $match: {
-        updatedAt: {
-          $gte: new Date(from_date),
-          $lte: new Date(to_date),
-        },
-      },
-    },
-    {
-      $addFields: {
-        cart: { $toObjectId: "$cartId" },
-      },
-    },
-    {
-      $lookup: {
-        from: "carts",
-        localField: "cart",
-        foreignField: "_id",
-        as: "carts",
-      },
-    },
-    {
-      $unwind: "$carts",
-    },
-    {
-      $unwind: "$carts.products",
-    },
-    {
-      $lookup: {
-        from: "products",
-        localField: "carts.products.productId",
-        foreignField: "_id",
-        as: "cart_product",
-      },
-    },
-    {
-      $unwind: "$cart_product",
-    },
-    {
-      $group: {
-        _id: "$cart_product.categoryId",
-        revenue: { $sum: "$carts.products.total" },
-        total_order: { $sum: "$carts.products.amountCart" },
-      },
-    },
-  ]);
-  return res.status(200).json(agg);
+  const newCategoryReport = new Report({
+    from_date,
+    to_date,
+    report: aggCategory,
+  });
+  await newCategoryReport.save();
+  return new SuccessResponse(200, newCategoryReport).send(res);
 });

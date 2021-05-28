@@ -13,10 +13,10 @@ const errorMiddleware = (err, req, res, next) => {
     }
   }
 
-  if (err.name === "CastError") {
-    errors.code = 400;
-    errors.message = "Id is invalid";
-  }
+  // if (err.name === "CastError") {
+  //   errors.code = 400;
+  //   errors.message = "Id is invalid";
+  // }
 
   if (err.name === "ValidationError") {
     errors = new ErrorResponse(400, err.errors);
